@@ -1,0 +1,50 @@
+#run following command to install awscli and boto3
+
+$ sudo pip install awscli
+$ sudo pip install boto3
+
+
+#then run  the command to connect to aws dynamo db
+$ aws configure
+
+#it will ask for the following input the credentials can be created on AWS IAM 
+#create access key if don't have any 
+#note down the access and secret key 
+
+AWS Access Key ID [****************XYZ]: 
+AWS Secret Access Key [****************xyz]: 
+Default region name [eu-west-1]: 
+Default output format [json]: 
+
+
+#create a python file
+
+import boto3
+
+dynamodb = boto3.resource('dynamodb')
+
+table = dynamodb.create_table(
+    TableName='Bus_data1',
+    KeySchema=[
+        {
+            'AttributeName': 'Vehicle_number', 
+            'KeyType': 'HASH'
+        }
+    
+    ], 
+    AttributeDefinitions=[
+        {
+            'AttributeName': 'Vehicle_number', 
+            'AttributeType': 'S'
+        }
+        
+    ], 
+    ProvisionedThroughput={
+        'ReadCapacityUnits': 1, 
+        'WriteCapacityUnits': 1
+    }
+)
+
+table.meta.client.get_waiter('table_exists').wait(TableName='users')
+print(table.item_count)
+
